@@ -1,19 +1,19 @@
 {
   "todos": [
     {
-      "text": "fare la spesa",
-      "id": 1,
-      "pippo": false
+      "id": "e2bc",
+      "text": "studiare react",
+      "done": true
     },
     {
-      "text": "ascoltare musica",
-      "id": 2,
-      "pippo": true
+      "id": "421d",
+      "text": "dfdfsf",
+      "done": false
     },
     {
-      "text": "comprare la droga",
-      "id": 3,
-      "pippo": false
+      "id": "f364",
+      "text": "fdsfds",
+      "done": false
     }
   ],
   "pippo": []

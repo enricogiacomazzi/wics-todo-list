@@ -1,32 +1,49 @@
-import { useState } from 'react'
 import './App.css'
 import List from './components/List'
 import AddItem from './components/AddItem'
+import axios from 'axios';
+import Spinner from './components/Spinner';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-const state = [
-  {text: 'fare la spesa', id: 1, done: false },
-  {text: 'ascoltare musica', id: 2, done: true },
-  {text: 'comprare la droga', id: 3, done: false },
-]
+const todoUrl = 'http://localhost:3000/todos';
 
 function App() {
-  const [todos, setTodos] = useState(state);
+  const queryClient = useQueryClient();
 
-  function addItem(text) {
-    setTodos([...todos, {id: Math.random.toString(), text, done: false}]);
-  }
+  const {data: todos, isPending: wait} = useQuery({
+    queryKey: ['todos'],
+    initialData: [],
+    queryFn: async () => {
+      const res = await axios.get(todoUrl);
+      return res.data;
+    }
+  });
 
-  function toggleItem(id) {
-      setTodos(todos.map(t => t.id === id ? {...t, done: !t.done} : t));
-  }
+  const refresh = () => queryClient.invalidateQueries({queryKey: ['todos']});
 
-  function deleteItem(id) {
-    setTodos(todos.filter(t => t.id !== id));
-}
+  const {mutate: addItem} = useMutation({
+    mutationFn: async (text) => await axios.post(todoUrl, {text, done: false}),
+    onSuccess: refresh
+  });
+
+  const {mutate: toggleItem} = useMutation({
+    mutationFn: async (id) => {
+      const toUpdate = todos.find(t => t.id === id);
+      toUpdate.done = !toUpdate.done;
+      await axios.put(todoUrl + '/' + id, toUpdate);
+    },
+    onSuccess: refresh
+  });
+
+  const {mutate: deleteItem} = useMutation({
+    mutationFn: async (id) => await axios.delete(todoUrl + '/' + id),
+    onSuccess: refresh
+  });
 
   return (
     <div className="container m-4">
       <AddItem add={addItem} />
+      {wait && <Spinner/>}
       <List todos={todos} toggleItem={toggleItem} deleteItem={deleteItem} />
     </div>
   )
