@@ -1,0 +1,20 @@
+{
+  "todos": [
+    {
+      "text": "fare la spesa",
+      "id": 1,
+      "pippo": false
+    },
+    {
+      "text": "ascoltare musica",
+      "id": 2,
+      "pippo": true
+    },
+    {
+      "text": "comprare la droga",
+      "id": 3,
+      "pippo": false
+    }
+  ],
+  "pippo": []
+}
